@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+    nginx:
+        image: nginx:1.23.4-alpine
+        ports:
+            - '80:80'
+        volumes:
+            - .:/var/www/app
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        restart: always
+        depends_on:
+            - database
+        networks:
+            - symfony_network
+
+    symfony_app:
+        container_name: symfony_app
+        build:
+            context: ./docker/php
+        ports:
+            - '9001:9001'
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        volumes:
+            - .:/var/www/app
+            - ./docker/php/settings/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+        restart: always
+        tty: true
+        working_dir: /var/www/app
+        depends_on:
+            - database
+            - nginx
+        env_file:
+            - .env
+        networks:
+            - symfony_network
+
+    database:
+        container_name: postgres
+        image: postgres:14-alpine
+        ports:
+            - "5432:5432"
+        env_file:
+            - .env
+        volumes:
+            - data-pgsql:/var/lib/postgresql/data
+            - ./docker/postgres/sql-dist/:/docker-entrypoint-initdb.d/
+#            - ./docker/postgres/data/:/var/lib/postgresql/data:rw
+#            - ./docker/postgres/data/:/var/lib/postgresql/data:rw
+        networks:
+            - symfony_network
+
+networks:
+    symfony_network:
+        driver: bridge
+
+volumes:
+    data-pgsql:
+        driver: local
+    redis:
+        driver: local
