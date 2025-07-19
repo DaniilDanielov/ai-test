@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ episode.name }} | Рик и Морти{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .episode-header {
+            background: linear-gradient(135deg, #42b983 0%, #a8edea 100%);
+            color: white;
+        }
+        .review-card {
+            border-left: 3px solid #42b983;
+        }
+        .review-form textarea {
+            min-height: 100px;
+        }
+        .rating-stars {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        .rating-stars .bi-star-fill.text-warning {
+            color: #ffc107 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="episode-header rounded-3 p-5 mb-5 text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                <span class="badge bg-white text-success mb-3">
+                    Сезон {{ episode.getSeason() }}, Эпизод {{ episode.getEpisodeNumber() }}
+                </span>
+                    <h1 class="display-4">{{ episode.getName() }}</h1>
+                    <p class="lead">{{ episode.getAirdate() }}</p>
+
+                    <div class="d-flex align-items-center mt-4">
+                        <div class="me-3">
+                            <div class="display-5 fw-bold">{{ averageRating }}</div>
+                            <small class="text-white-50">средний балл</small>
+                        </div>
+                        <div class="rating-stars">
+                            {% for i in 1..5 %}
+                                <i class="bi bi-star-fill {{ i <= averageRating|round ? 'text-warning' : 'text-white-50' }}"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mb-5">
+                {% include 'episode/_reviews_section.html.twig' with {
+                    'latestReviews': latestReviews,
+                    'episodeId': episode.id
+                } %}
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Ваше мнение</h3>
+                        {{ form_start(reviewForm) }}
+                        {{ form_widget(reviewForm) }}
+                        <button type="submit" class="btn btn-success w-100 mt-3">
+                            Отправить отзыв
+                        </button>
+                        {{ form_end(reviewForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

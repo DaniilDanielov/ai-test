@@ -1,0 +1,21 @@
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h3 class="card-title mb-4">Последние отзывы</h3>
+
+        {% if latestReviews|length > 0 %}
+            {% for review in latestReviews %}
+                <div class="review-card mb-4 p-3 bg-light rounded">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>{{ review.author }}</strong>
+                        <small class="text-muted">{{ review.createdAt|date('d.m.Y H:i') }}</small>
+                    </div>
+                    <p class="mb-0">{{ review.content }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-light">
+                Пока нет отзывов. Будьте первым!
+            </div>
+        {% endif %}
+    </div>
+</div>

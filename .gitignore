@@ -39,7 +39,7 @@ symfony/vendor/*
 !bin/console
 !bin/symfony_requirements
 
-
+/vendor/*
 .idea
 # Assets and user uploads
 /web/bundles/

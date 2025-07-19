@@ -51,11 +51,18 @@ services:
         networks:
             - symfony_network
 
+    redis:
+        image: redis:7.4.5-alpine
+        container_name: redis
+        volumes:
+            - redis_data:/data
+
 networks:
     symfony_network:
+
 
 volumes:
     data-pgsql:
         driver: local
-    redis:
+    redis_data:
         driver: local

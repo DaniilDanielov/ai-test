@@ -1,0 +1,14 @@
+parameters:
+
+    app.sentiment_analysis_implementation: 'huggingFace'
+
+    #   Hugging faceAPI
+    app.sentiment_analysis_api_url: 'https://router.huggingface.co/v1/chat/completions'
+    app.sentiment_analysis_api_key: '%env(SENTIMENT_ANALYSIS_API_KEY)%'
+
+    #   NLP io faceAPI
+    app.nlp_sentiment_analysis_api_url: 'https://api.nlpcloud.io/v1/distilbert-base-uncased-finetuned-sst-2-english/sentiment'
+    app.nlp_sentiment_analysis_api_key: '%env(NLP_SENTIMENT_ANALYSIS_API_KEY)%'
+
+    #   Rick And Morty API
+    app.rick_and_morty_api_uri: 'https://rickandmortyapi.com/api/episode'
