@@ -8,8 +8,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 // Лучше подходит для английского текста, и ответ у нее удобнее парсить
 
-// todo доделать фабрику
-readonly class SentimentAnalysisNlpCloudClient implements SentimentAnalysisClientInterface
+readonly class SentimentAnalysisNlpCloudClient implements SentimentAnalysisProviderInterface
 {
     protected const NLP_STATUS_MAPPING = [
         'NEGATIVE' => 0,
@@ -17,10 +16,10 @@ readonly class SentimentAnalysisNlpCloudClient implements SentimentAnalysisClien
     ];
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly string $apiUrl,
-        private readonly string $apiKey,
-        private readonly LoggerInterface $logger,
+        private HttpClientInterface $httpClient,
+        private string $apiUrl,
+        private string $apiKey,
+        private LoggerInterface $logger,
     )
     {
     }

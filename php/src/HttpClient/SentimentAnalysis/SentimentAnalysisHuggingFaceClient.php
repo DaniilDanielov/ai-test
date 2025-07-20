@@ -6,10 +6,8 @@ use App\Exception\SentimentIdentificationException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-// Пока использую эту реализацию, т.к. это единственный вариант, который я нашел с бесплатным распознаванием
-// русского текста
-// todo Вернуть имплементацию
-class SentimentAnalysisHuggingFaceClient
+// Хорошо работает со всеми языками, но не очень удобно парсить ответы
+class SentimentAnalysisHuggingFaceClient implements SentimentAnalysisProviderInterface
 {
     // Можно заменить на другие модели AI https://huggingface.co/models
     protected const DEFAULT_MODEL = 'deepseek-ai/DeepSeek-V3-0324';

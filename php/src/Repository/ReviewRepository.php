@@ -56,7 +56,6 @@ class ReviewRepository extends ServiceEntityRepository
             ->orderBy('r.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery();
-
         try {
             $result =$query->getResult();
         } catch (Exception $exception) {

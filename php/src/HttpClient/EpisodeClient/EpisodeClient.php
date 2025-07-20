@@ -3,13 +3,17 @@
 namespace App\HttpClient\EpisodeClient;
 
 use App\Dto\EpisodeDto;
+use Exception;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class EpisodeClient
+readonly class EpisodeClient
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly string $apiUrl
+        private HttpClientInterface $httpClient,
+        private LoggerInterface     $logger,
+        private string              $apiUrl
     )
     {
     }
@@ -19,11 +23,19 @@ class EpisodeClient
      */
     public function findAllEpisodesByPage(int $page = 1): array
     {
-        $response = $this->httpClient->request('GET', $this->apiUrl, [
-            'query' => ['page' => $page]
-        ]);
-
-        $data =  $response->toArray();
+        try {
+            $response = $this->httpClient->request('GET', $this->apiUrl, [
+                'query' => ['page' => $page]
+            ]);
+            $data =  $response->toArray();
+        } catch (Exception $exception) {
+            $this->logger->error('В процессе получения списка эпизодов из API возникла ошибка',
+                [
+                    'exception' => $exception->getMessage()
+                ]
+            );
+            throw new RuntimeException('Получение списка эпизодов временно недоступно');
+        }
 
         return [
             'info' => $data['info'],
@@ -36,13 +48,17 @@ class EpisodeClient
      */
     public function findEpisodeById(int $id): ?EpisodeDto
     {
-        $response = $this->httpClient->request('GET', $this->apiUrl.'/'.$id);
-
-        if ($response->getStatusCode() !== 200) {
-            return null;
+        try {
+            $response = $this->httpClient->request('GET', $this->apiUrl.'/'.$id);
+            $apiEpisode = $response->toArray();
+        } catch (Exception $exception) {
+            $this->logger->error('В процессе получения эпизода из API возникла ошибка',
+                [
+                    'exception' => $exception->getMessage()
+                ]
+            );
+            throw new RuntimeException('Получение эпизодов временно недоступно');
         }
-
-        $apiEpisode = $response->toArray();
 
         return $this->transformEpisodeData($apiEpisode);
     }
@@ -54,8 +70,6 @@ class EpisodeClient
         }, $apiEpisodes);
     }
 
-
-    // Все преобразования тут по паттерну GRASP Information Expert
     private function transformEpisodeData(array $apiEpisode): EpisodeDto
     {
         return EpisodeDto::createFromArray([
@@ -69,7 +83,6 @@ class EpisodeClient
         ]);
     }
 
-    //
     private function extractSeasonNumber(string $episodeCode): int
     {
         return (int) substr(explode('E', $episodeCode)[0], 1);

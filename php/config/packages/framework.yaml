@@ -7,6 +7,8 @@ framework:
 
     #esi: true
     #fragments: true
+    router:
+        http_port: '%env(PORT)%'
 
 when@test:
     framework:

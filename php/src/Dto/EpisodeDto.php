@@ -4,7 +4,6 @@ namespace App\Dto;
 
 readonly class EpisodeDto
 {
-    //todo подумать насчет валидации и получения некорректных значений
     private function __construct(
         private int    $id,
         private string $name,

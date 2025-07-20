@@ -10,8 +10,10 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
-#     todo добавить фабрику
-
+    App\HttpClient\SentimentAnalysis\SentimentAnalysisHuggingFaceClient:
+        arguments:
+            $apiUrl: '%app.sentiment_analysis_api_url%'
+            $apiKey: '%app.sentiment_analysis_api_key%'
 
     App\HttpClient\SentimentAnalysis\SentimentAnalysisNlpCloudClient:
         arguments:

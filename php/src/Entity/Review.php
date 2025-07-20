@@ -24,8 +24,8 @@ class Review
     #[ORM\Column(type: 'datetime')]
     private \DateTime $createdAt;
 
-    #[ORM\Column(type: 'integer')]
-    private int $sentimentRating;
+    #[ORM\Column(type: 'integer',nullable: true )]
+    private ?int $sentimentRating;
 
     public function __construct()
     {

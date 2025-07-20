@@ -4,7 +4,6 @@ namespace App\Dto;
 
 readonly class EpisodeViewDto
 {
-    //todo подумать насчет валидации и получения некорректных значений
     private function __construct(
         private EpisodeDto $episode,
         private float $averageRating,

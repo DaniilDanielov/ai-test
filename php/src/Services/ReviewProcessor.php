@@ -7,6 +7,7 @@ use App\Repository\EpisodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 // Разместил в отдельном по 2 причинам:
 // 1) Функция создания связана с обращениями к анализу текста и не совсем сочетается с концепцией Репозитория, как источника данных
@@ -34,12 +35,8 @@ readonly class ReviewProcessor
 
         $episode = $this->episodeRepository->getEpisodeData($episodeId);
 
-        if (! $episode) {
-            throw new \RuntimeException('Серия с таким идентификатором не найдена');
-        }
-
         $review = new Review();
-        $review->setEpisodeId($episodeId);
+        $review->setEpisodeId($episode->getEpisode()->getId());
         $review->setAuthor($createReviewDto->getAuthor());
         $review->setContent($createReviewDto->getContent());
 

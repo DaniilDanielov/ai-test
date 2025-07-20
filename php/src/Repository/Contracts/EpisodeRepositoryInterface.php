@@ -6,7 +6,6 @@ use App\Dto\EpisodeViewDto;
 
 interface EpisodeRepositoryInterface
 {
-    // todo сделать погибче, если успею
     /**
      * Получение данных о всех эпизодах
      *
