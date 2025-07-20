@@ -24,3 +24,14 @@ grant connect,temporary,create on database "${POSTGRES_DB}" to "${POSTGRES_USER}
 grant connect,temporary on database "${POSTGRES_DB}" to "${APP_DB_ROLE_WRITER}";
 grant connect,temporary on database "${POSTGRES_DB}" to "${APP_DB_ROLE_READER}";
 
+do $$
+begin
+create schema "${DB_SCHEMA}";
+exception
+    when duplicate_schema
+      then raise notice 'schema "${DB_SCHEMA}" already exists';
+end $$;
+
+grant usage on schema "${DB_SCHEMA}" to "${APP_DB_ROLE_WRITER}", "${APP_DB_ROLE_READER}";
+grant create on schema "${DB_SCHEMA}" to "${POSTGRES_USER}";
+alter schema "${DB_SCHEMA}" owner to "${POSTGRES_USER}";
