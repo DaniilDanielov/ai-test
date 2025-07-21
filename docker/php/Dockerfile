@@ -1,6 +1,5 @@
 FROM php:8.2.0-fpm-alpine
 
-# 1. Сначала выполняем ВСЕ действия, требующие root (apk, pecl, etc)
 RUN apk add --no-cache msmtp wget libzip icu zlib zlib-dev linux-headers
 
 RUN apk update && apk add --no-cache \
@@ -24,5 +23,5 @@ RUN deluser www-data 2>/dev/null || true && \
     adduser -u 1000 -G www-data -D -H -s /bin/false www-data
 
 # 3. Меняем владельца файлов и переключаемся
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 USER www-data

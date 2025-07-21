@@ -1,10 +1,10 @@
-	include .env
-build: docker-build docker-init
-rebuild: docker-down docker-prune docker-rebuild docker-init
-init: envs docker-init
-du: docker-up cdu
+	-include .env
+rebuild: docker-down docker-prune docker-rebuild
+init: envs docker-build init-app du
+du: docker-up
 dd: docker-down
-
+envs: create_envs create_initial_sql_files
+restart: du du
 
 test:
 	grep -P '^\tinclude .env' Makefile || sed -i '1s/^/\tinclude .env\n/' Makefile
@@ -24,29 +24,24 @@ docker-build:
 docker-rebuild:
 	docker-compose build --no-cache
 
-docker-init:
-	make dd
-	make du
-
-restart: docker-down docker-build docker-up
-
 docker-prune:
 	docker-compose rm -fsv
 
 php:
 	docker-compose exec -it symfony_app sh
 
-# Инициализация переменных и их внесение в template файлы
-envs: create_envs create_initial_sql_files
-
-#Инициализация env файлов
 create_envs:
 	@test -f .env || cp .env.example .env
-	@grep -P '^\tinclude .env' Makefile || sed -i '1s/^/\tinclude .env\n/' Makefile
+	@chmod 644 .env
+	@grep -P '^\t-include .env' Makefile || sed -i '1s/^/\t-include .env\n/' Makefile
 
-#Сборка файлов для инициализации БД
 create_initial_sql_files:
 	set -a && . ./.env && set +a && cp -f ./docker/postgres/sql-template/100.sql ./docker/postgres/sql-dist/100.sql &&\
 	envsubst < ./docker/postgres/sql-template/100.sql > ./docker/postgres/sql-dist/100.sql
 
+init-app:
+	@test -f ./php/.env || cp ./php/.env.dev ./php/.env
+	docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && composer install  --prefer-source --no-interaction"
+	@docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php bin/console doctrine:migrations:migrate --no-interaction && ./vendor/bin/phpunit"
+	@docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php ./vendor/bin/phpunit"
 

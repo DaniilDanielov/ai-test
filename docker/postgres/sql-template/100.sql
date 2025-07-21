@@ -1,18 +1,16 @@
 do $$ begin
-  create role "${APP_DB_ROLE_WRITER}";
-  exception
+create role "${APP_DB_ROLE_WRITER}";
+exception
     when duplicate_object
       then raise notice 'not creating role "${APP_DB_ROLE_WRITER}"';
 end $$;
 
-
 do $$ begin
-  create user "${POSTGRES_USER}" with createrole password '${PG_PASSWORD}';
-  exception
+  create user "${POSTGRES_USER}" with createrole '${APP_DB_ROLE_READER}' '${PG_PASSWORD}';
+exception
     when duplicate_object
       then raise notice 'not creating role "${POSTGRES_USER}"';
 end $$;
-
 
 revoke create on schema public from public;
 revoke all on database "${POSTGRES_DB}" from public;
@@ -26,12 +24,16 @@ grant connect,temporary on database "${POSTGRES_DB}" to "${APP_DB_ROLE_READER}";
 
 do $$
 begin
-create schema "${DB_SCHEMA}";
+create schema "${SCHEMA}";
 exception
     when duplicate_schema
-      then raise notice 'schema "${DB_SCHEMA}" already exists';
+      then raise notice 'schema "${SCHEMA}" already exists';
 end $$;
 
-grant usage on schema "${DB_SCHEMA}" to "${APP_DB_ROLE_WRITER}", "${APP_DB_ROLE_READER}";
-grant create on schema "${DB_SCHEMA}" to "${POSTGRES_USER}";
-alter schema "${DB_SCHEMA}" owner to "${POSTGRES_USER}";
+ALTER ROLE "${POSTGRES_USER}" SET search_path TO "${SCHEMA}", public;
+ALTER ROLE "${APP_DB_ROLE_WRITER}" SET search_path TO "${SCHEMA}", public;
+ALTER ROLE "${APP_DB_ROLE_READER}" SET search_path TO "${SCHEMA}", public;
+
+grant usage on schema "${SCHEMA}" to "${APP_DB_ROLE_WRITER}", "${APP_DB_ROLE_READER}";
+grant create on schema "${SCHEMA}" to "${POSTGRES_USER}";
+alter schema "${SCHEMA}" owner to "${POSTGRES_USER}";

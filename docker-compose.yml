@@ -46,8 +46,6 @@ services:
         volumes:
             - data-pgsql:/var/lib/postgresql/data
             - ./docker/postgres/sql-dist/:/docker-entrypoint-initdb.d/
-#            - ./docker/postgres/data/:/var/lib/postgresql/data:rw
-#            - ./docker/postgres/data/:/var/lib/postgresql/data:rw
         networks:
             - symfony_network
 
@@ -59,7 +57,6 @@ services:
 
 networks:
     symfony_network:
-
 
 volumes:
     data-pgsql:
