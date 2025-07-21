@@ -1,4 +1,13 @@
 # Rick and Morty Reviews
+### Работа с API ключами
+Приложение использует разные реализации оценки _SENTIMENT ANALYSIS_ в зависимости от переданного текста
+
+Для оценки других языков нужно создать ключ и подставить его в .env
+SENTIMENT_ANALYSIS_API_KEY (Дефолтный провайдер) =>  https://huggingface.co/settings/tokens
+
+NLP_SENTIMENT_ANALYSIS_API_KEY (Провайдер английского текста) => https://nlpcloud.com/home/token
+Ключ актуален (должен работать сразу) - оценка английских текстов будет менять общую оценку
+
 ## Установка и запуск
 
 ### Способ 1: С использованием Makefile (рекомендуется)
@@ -11,7 +20,6 @@ make envs
 ```bash
 make init
 ```
-
 
 ### Способ 2: без Makefile
 #### Копируем env
@@ -48,23 +56,7 @@ docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php bin/consol
 
 
 После запуска сервис будет доступен по адресу:  
-**http://localhost:8000**
-
-## Система анализа тональности
-
-Приложение использует разные реализации _Sentiment Analysis_ в зависимости от языка текста:
-
-### Работа с API ключами
-Приложение использует разные реализации оценки _SENTIMENT ANALYSIS_ в зависимости от переданного текста
-
-NLP_SENTIMENT_ANALYSIS_API_KEY (Провайдер английского текста) => https://nlpcloud.com/home/token
-Ключ актуален (должен работать сразу) - оценка английских текстов будет менять общую оценку
-
-
-Для оценки других языков нужно создать ключи и подставить его в .env
-SENTIMENT_ANALYSIS_API_KEY (Дефолтный провайдер) =>  https://huggingface.co/settings/tokens
-
-Работает, через access keys, поэтому если оценка не будет изменяться (ключи истекли) нужно добавить свои ключи в .env
+**http://localhost:8080**
 
 ## Текст задания:
 Create a service that meets the following requirements:
