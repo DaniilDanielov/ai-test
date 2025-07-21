@@ -1,0 +1,60 @@
+{
+    "english_positive": {
+        "scored_labels": [
+            {
+                "label": "POSITIVE",
+                "score": 0.9998644590377808
+            }
+        ]
+    },
+    "russian_positive": {
+        "id": "860894b7-1512-49db-ac56-33496489d0fa",
+        "object": "chat.completion",
+        "created": 1753125096,
+        "model": "accounts/fireworks/models/deepseek-v3-0324",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "```json\n{\n  \"rating\": 1\n}\n```"
+                },
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 45,
+            "total_tokens": 59,
+            "completion_tokens": 14
+        }
+    },
+    "english_negative": {
+        "scored_labels": [
+            {
+                "label": "NEGATIVE",
+                "score": 0.9997472167015076
+            }
+        ]
+    },
+    "russian_negative": {
+        "id": "a9ceafca-503b-46a3-bbfa-e9a4b88a2b8a",
+        "object": "chat.completion",
+        "created": 1753125423,
+        "model": "accounts/fireworks/models/deepseek-v3-0324",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "```json\n{\n  \"rating\": 0\n}\n```"
+                },
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 48,
+            "total_tokens": 62,
+            "completion_tokens": 14
+        }
+    }
+}

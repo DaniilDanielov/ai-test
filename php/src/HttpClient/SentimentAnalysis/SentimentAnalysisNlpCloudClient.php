@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 // Лучше подходит для английского текста, и ответ у нее удобнее парсить
-
 readonly class SentimentAnalysisNlpCloudClient implements SentimentAnalysisProviderInterface
 {
     protected const NLP_STATUS_MAPPING = [
@@ -16,9 +15,9 @@ readonly class SentimentAnalysisNlpCloudClient implements SentimentAnalysisProvi
     ];
 
     public function __construct(
-        private HttpClientInterface $httpClient,
         private string $apiUrl,
         private string $apiKey,
+        private HttpClientInterface $httpClient,
         private LoggerInterface $logger,
     )
     {
@@ -26,24 +25,27 @@ readonly class SentimentAnalysisNlpCloudClient implements SentimentAnalysisProvi
 
     public function getSentimentAnalysisResult(string $text): int
     {
-        $requestData = $this->prepareRequestData($text);
-        $response = $this->httpClient->request('POST', $this->apiUrl, $requestData);
-
-        $data = $response->toArray();
-
+        $data = $this->getDataFromApi($text);
         if (isset($data['scored_labels'][0]['label'])) {
             $sentimentAnalysisResult = $data['scored_labels'][0]['label'];
             $result = static::NLP_STATUS_MAPPING[$sentimentAnalysisResult];
         } else {
             $this->logger->error('Ошибка интерпретации ответа API',[
-                'request' => $requestData,
-                'response' => $requestData,
+                'data' => $data,
                 'url' => $this->apiUrl,
             ]);
             throw new SentimentIdentificationException();
         }
 
         return $result;
+    }
+
+    protected function getDataFromApi(string $text): array
+    {
+        $requestData = $this->prepareRequestData($text);
+        $response = $this->httpClient->request('POST', $this->apiUrl, $requestData);
+
+        return $response->toArray();
     }
 
     protected function prepareRequestData(string $text): array

@@ -98,7 +98,7 @@ class Review
         return $this->sentimentRating;
     }
 
-    public function setSentimentRating(int $sentimentRating): void
+    public function setSentimentRating(?int $sentimentRating): void
     {
         $this->sentimentRating = $sentimentRating;
     }
