@@ -17,6 +17,9 @@ docker-down:
 
 docker-up:
 	docker-compose up -d
+	docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && composer install  --prefer-source --no-interaction"
+	@docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php bin/console doctrine:migrations:migrate --no-interaction && ./vendor/bin/phpunit"
+	@docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php ./vendor/bin/phpunit"
 
 docker-build:
 	docker-compose build
@@ -41,7 +44,4 @@ create_initial_sql_files:
 
 init-app:
 	@test -f ./php/.env || cp ./php/.env.dev ./php/.env
-	docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && composer install  --prefer-source --no-interaction"
-	@docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php bin/console doctrine:migrations:migrate --no-interaction && ./vendor/bin/phpunit"
-	@docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php ./vendor/bin/phpunit"
 
