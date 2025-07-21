@@ -1,6 +1,6 @@
 	-include .env
 rebuild: docker-down docker-prune docker-rebuild
-init: envs docker-build init-app du
+init: docker-build du
 du: docker-up
 dd: docker-down
 envs: create_envs create_initial_sql_files
@@ -35,6 +35,7 @@ php:
 
 create_envs:
 	@test -f .env || cp .env.example .env
+	@test -f ./php/.env || cp ./php/.env.dev ./php/.env
 	@chmod 644 .env
 	@grep -P '^\t-include .env' Makefile || sed -i '1s/^/\t-include .env\n/' Makefile
 
@@ -42,6 +43,4 @@ create_initial_sql_files:
 	set -a && . ./.env && set +a && cp -f ./docker/postgres/sql-template/100.sql ./docker/postgres/sql-dist/100.sql &&\
 	envsubst < ./docker/postgres/sql-template/100.sql > ./docker/postgres/sql-dist/100.sql
 
-init-app:
-	@test -f ./php/.env || cp ./php/.env.dev ./php/.env
 

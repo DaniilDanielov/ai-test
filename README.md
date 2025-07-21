@@ -1,5 +1,5 @@
-# crt-symfony-4
-## 🛠 Установка и запуск
+# Rick and Morty Reviews
+## Установка и запуск
 
 ### Способ 1: С использованием Makefile (рекомендуется)
 
@@ -14,7 +14,37 @@ make init
 
 
 ### Способ 2: без Makefile
-1) Скопировать .env.example и сохранить его как .env
+#### Копируем env
+```bash
+test -f .env || cp .env.example .env && \
+test -f ./php/.env || cp ./php/.env.dev ./php/.env
+```
+
+#### Подставляем envs в init файл Postgres
+```bash
+set -a && . ./.env && set +a && cp -f ./docker/postgres/sql-template/100.sql ./docker/postgres/sql-dist/100.sql &&\
+	envsubst < ./docker/postgres/sql-template/100.sql > ./docker/postgres/sql-dist/100.sql
+  ```
+
+#### Build контейнеров
+```bash
+docker-compose build
+```
+
+#### Поднятие контейнеров
+```bash
+docker-compose up -d
+```
+
+#### Установка composer
+```bash
+docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && composer install  --prefer-source --no-interaction"
+```
+
+#### Миграции и тесты
+```bash
+docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php bin/console doctrine:migrations:migrate --no-interaction && ./vendor/bin/phpunit"
+```
 
 
 После запуска сервис будет доступен по адресу:  
