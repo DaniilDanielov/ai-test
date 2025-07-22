@@ -9,7 +9,6 @@ NLP_SENTIMENT_ANALYSIS_API_KEY (Провайдер английского тек
 Ключ актуален (должен работать сразу) - оценка английских текстов будет менять общую оценку
 
 ## Установка и запуск
-
 ### Способ 1: С использованием Makefile (рекомендуется)
 
 а) с Makefile
@@ -54,6 +53,14 @@ docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && composer insta
 docker-compose exec -it symfony_app sh -c "cd /var/www/app/php && php bin/console doctrine:migrations:migrate --no-interaction && ./vendor/bin/phpunit"
 ```
 
+На версиях docker-compose ниже 2 необходимо зайти в контейнер php и выполнить
+```bash
+composer install  --prefer-source --no-interaction 
+```
+
+```bash
+php bin/console doctrine:migrations:migrate --no-interaction
+```
 
 После запуска сервис будет доступен по адресу:  
 **http://localhost:8080**
